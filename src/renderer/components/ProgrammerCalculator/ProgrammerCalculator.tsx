@@ -201,6 +201,7 @@ function ProgrammerCalculator({ onAddToHistory }: ProgrammerCalculatorProps) {
         <button onClick={() => handleInput('9')} disabled={base === 'binary' || base === 'octal'}>9</button>
         <button className="btn-function" onClick={handleBackspace}>⌫</button>
         <button className="btn-function" onClick={handleClear}>C</button>
+        <button className="btn-equals" onClick={handleEquals}>=</button>
 
         <button onClick={() => handleInput('4')}>4</button>
         <button onClick={() => handleInput('5')}>5</button>
@@ -208,8 +209,8 @@ function ProgrammerCalculator({ onAddToHistory }: ProgrammerCalculatorProps) {
         <button onClick={() => handleInput('1')}>1</button>
         <button onClick={() => handleInput('2')}>2</button>
         <button onClick={() => handleInput('3')}>3</button>
-        <button onClick={() => handleInput('0')}>0</button>
-        <button className="btn-equals" onClick={handleEquals}>=</button>
+
+        <button onClick={() => handleInput('0')} style={{ gridColumn: 'span 6' }}>0</button>
       </div>
     </div>
   );
