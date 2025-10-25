@@ -206,9 +206,16 @@ function ProgrammerCalculator({ onAddToHistory }: ProgrammerCalculatorProps) {
         <button onClick={() => handleInput('4')}>4</button>
         <button onClick={() => handleInput('5')}>5</button>
         <button onClick={() => handleInput('6')}>6</button>
+        <div></div>
+        <div></div>
+        <div></div>
+
         <button onClick={() => handleInput('1')}>1</button>
         <button onClick={() => handleInput('2')}>2</button>
         <button onClick={() => handleInput('3')}>3</button>
+        <div></div>
+        <div></div>
+        <div></div>
 
         <button onClick={() => handleInput('0')} style={{ gridColumn: 'span 6' }}>0</button>
       </div>
