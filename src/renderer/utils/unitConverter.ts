@@ -71,6 +71,36 @@ export const unitConversions: ConversionMap = {
     'Hours-Days': (v) => v / 24,
     'Days-Hours': (v) => v * 24,
   },
+  Energy: {
+    'Joules-Calories': (v) => v / 4.184,
+    'Calories-Joules': (v) => v * 4.184,
+    'Joules-Kilocalories': (v) => v / 4184,
+    'Kilocalories-Joules': (v) => v * 4184,
+    'Joules-Kilowatt Hours': (v) => v / 3600000,
+    'Kilowatt Hours-Joules': (v) => v * 3600000,
+    'Joules-Electron Volts': (v) => v * 6.242e+18,
+    'Electron Volts-Joules': (v) => v / 6.242e+18,
+  },
+  Power: {
+    'Watts-Kilowatts': (v) => v / 1000,
+    'Kilowatts-Watts': (v) => v * 1000,
+    'Watts-Horsepower': (v) => v / 745.7,
+    'Horsepower-Watts': (v) => v * 745.7,
+    'Kilowatts-Horsepower': (v) => v * 1.34102,
+    'Horsepower-Kilowatts': (v) => v / 1.34102,
+  },
+  Pressure: {
+    'Pascal-Bar': (v) => v / 100000,
+    'Bar-Pascal': (v) => v * 100000,
+    'Pascal-Kilopascal': (v) => v / 1000,
+    'Kilopascal-Pascal': (v) => v * 1000,
+    'Pascal-Atmosphere': (v) => v / 101325,
+    'Atmosphere-Pascal': (v) => v * 101325,
+    'Pascal-PSI': (v) => v / 6895,
+    'PSI-Pascal': (v) => v * 6895,
+    'Bar-Atmosphere': (v) => v / 1.01325,
+    'Atmosphere-Bar': (v) => v * 1.01325,
+  },
 };
 
 export function convertUnit(
