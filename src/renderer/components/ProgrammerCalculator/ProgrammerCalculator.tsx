@@ -37,55 +37,80 @@ function ProgrammerCalculator({ onAddToHistory }: ProgrammerCalculatorProps) {
     }
   }, [value, base]);
 
-  const handleBitwiseOperation = useCallback((operation: string, operand?: string) => {
-    try {
-      const decimalValue = parseInt(value, getRadix(base));
-      let result: number;
+const [pendingOperation, setPendingOperation] = useState<string | null>(null);
+const [firstOperand, setFirstOperand] = useState<string>('');
 
-      switch (operation) {
-        case 'AND':
-          if (operand) {
-            const op = parseInt(operand, getRadix(base));
-            result = engine.bitwiseAnd(decimalValue, op);
-          } else return;
-          break;
-        case 'OR':
-          if (operand) {
-            const op = parseInt(operand, getRadix(base));
-            result = engine.bitwiseOr(decimalValue, op);
-          } else return;
-          break;
-        case 'XOR':
-          if (operand) {
-            const op = parseInt(operand, getRadix(base));
-            result = engine.bitwiseXor(decimalValue, op);
-          } else return;
-          break;
-        case 'NOT':
-          result = engine.bitwiseNot(decimalValue);
-          break;
-        case 'LSH':
-          result = engine.leftShift(decimalValue, 1);
-          break;
-        case 'RSH':
-          result = engine.rightShift(decimalValue, 1);
-          break;
-        default:
-          return;
-      }
-
-      const newValue = engine.convertBase(result.toString(), 'decimal', base);
-      setValue(newValue);
-
-      onAddToHistory({
-        expression: `${value} ${operation}`,
-        result: newValue,
-        mode: 'programmer',
-      });
-    } catch (err) {
-      console.error('Operation error:', err);
+const handleBitwiseOperation = useCallback((operation: string, operand?: string) => {
+  try {
+    // For binary operations without a second operand, store the pending operation
+    if ((operation === 'AND' || operation === 'OR' || operation === 'XOR') && !operand) {
+      setPendingOperation(operation);
+      setFirstOperand(value);
+      setValue('0');
+      return;
     }
-  }, [value, base, onAddToHistory]);
+
+    const decimalValue = parseInt(value, getRadix(base));
+    let result: number;
+
+    switch (operation) {
+      case 'AND':
+        if (operand) {
+          const op = parseInt(operand, getRadix(base));
+          result = engine.bitwiseAnd(decimalValue, op);
+        } else return;
+        break;
+      case 'OR':
+        if (operand) {
+          const op = parseInt(operand, getRadix(base));
+          result = engine.bitwiseOr(decimalValue, op);
+        } else return;
+        break;
+      case 'XOR':
+        if (operand) {
+          const op = parseInt(operand, getRadix(base));
+          result = engine.bitwiseXor(decimalValue, op);
+        } else return;
+        break;
+      case 'NOT':
+        result = engine.bitwiseNot(decimalValue);
+        break;
+      case 'LSH':
+        result = engine.leftShift(decimalValue, 1);
+        break;
+      case 'RSH':
+        result = engine.rightShift(decimalValue, 1);
+        break;
+      default:
+        return;
+    }
+
+    const newValue = engine.convertBase(result.toString(), 'decimal', base);
+    setValue(newValue);
+
+    const expressionText = operand 
+      ? `${operand} ${operation} ${value}`
+      : `${value} ${operation}`;
+      
+    onAddToHistory({
+      expression: expressionText,
+      result: newValue,
+      mode: 'programmer',
+    });
+    
+    // Reset pending operation state
+    setPendingOperation(null);
+    setFirstOperand('');
+  } catch (err) {
+    console.error('Operation error:', err);
+  }
+}, [value, base, onAddToHistory]);
+
+const handleEquals = useCallback(() => {
+  if (pendingOperation && firstOperand) {
+    handleBitwiseOperation(pendingOperation, firstOperand);
+  }
+}, [pendingOperation, firstOperand, handleBitwiseOperation]);
 
   function getRadix(base: NumberBase): number {
     switch (base) {
