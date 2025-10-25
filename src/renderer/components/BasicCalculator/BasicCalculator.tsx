@@ -29,16 +29,20 @@ function BasicCalculator({ onAddToHistory, memory }: BasicCalculatorProps) {
     setDisplay(result);
   }, []);
 
-  const handleOperator = useCallback((operator: string) => {
-    setError('');
-    try {
-      const result = engine.performOperation(operator);
-      setDisplay(result);
-      setExpression(engine.getExpression());
-    } catch (err: any) {
-      setError(err.message);
-    }
-  }, []);
+
+const handleOperator = useCallback((operator: string) => {
+  setError('');
+  try {
+    const result = engine.performOperation(operator);
+    setDisplay(result);
+    setExpression(engine.getExpression());
+  } catch (err: any) {
+    setError(err.message);
+    // Reset calculator state to prevent inconsistency
+    handleClear();
+  }
+}, [handleClear]);
+
 
   const handleEquals = useCallback(() => {
     setError('');
