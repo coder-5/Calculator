@@ -1,0 +1,192 @@
+:root {
+  /* Light Theme Colors */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f5f5f5;
+  --color-bg-tertiary: #e0e0e0;
+  --color-text-primary: #000000;
+  --color-text-secondary: #666666;
+  --color-border: #cccccc;
+  --color-accent: #2196f3;
+  --color-accent-hover: #1976d2;
+  --color-button-bg: #e0e0e0;
+  --color-button-hover: #d0d0d0;
+  --color-button-active: #c0c0c0;
+  --color-operator-bg: #ff9800;
+  --color-operator-hover: #f57c00;
+  --color-equals-bg: #4caf50;
+  --color-equals-hover: #388e3c;
+  --color-error: #f44336;
+  --color-success: #4caf50;
+  --color-warning: #ff9800;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Font Sizes */
+  --font-xs: 12px;
+  --font-sm: 14px;
+  --font-md: 16px;
+  --font-lg: 20px;
+  --font-xl: 24px;
+  --font-2xl: 32px;
+  --font-3xl: 48px;
+}
+
+[data-theme='dark'] {
+  /* Dark Theme Colors */
+  --color-bg-primary: #1e1e1e;
+  --color-bg-secondary: #2d2d2d;
+  --color-bg-tertiary: #3d3d3d;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #b0b0b0;
+  --color-border: #444444;
+  --color-accent: #64b5f6;
+  --color-accent-hover: #42a5f5;
+  --color-button-bg: #3d3d3d;
+  --color-button-hover: #4d4d4d;
+  --color-button-active: #5d5d5d;
+  --color-operator-bg: #ff9800;
+  --color-operator-hover: #ffa726;
+  --color-equals-bg: #66bb6a;
+  --color-equals-hover: #81c784;
+  --color-error: #ef5350;
+  --color-success: #66bb6a;
+  --color-warning: #ffa726;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  overflow: hidden;
+}
+
+code {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  background-color: var(--color-button-bg);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+button:hover {
+  background-color: var(--color-button-hover);
+}
+
+button:active {
+  background-color: var(--color-button-active);
+  transform: scale(0.98);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+input,
+select {
+  font-family: inherit;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-sm);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--color-accent);
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease;
+}

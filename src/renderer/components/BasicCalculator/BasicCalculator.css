@@ -1,0 +1,105 @@
+.basic-calculator {
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.calculator-display-area {
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.expression {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xs);
+  min-height: 20px;
+}
+
+.display {
+  font-size: var(--font-3xl);
+  font-weight: 300;
+  color: var(--color-text-primary);
+  word-break: break-all;
+  text-align: right;
+}
+
+.error-indicator {
+  font-size: var(--font-xs);
+  color: var(--color-error);
+  margin-top: var(--spacing-xs);
+}
+
+.calculator-controls {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.control-btn {
+  flex: 1;
+  padding: var(--spacing-sm);
+  font-size: var(--font-md);
+}
+
+.calculator-memory {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.calculator-memory button {
+  padding: var(--spacing-sm);
+  font-size: var(--font-sm);
+  font-weight: 600;
+}
+
+.calculator-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.calculator-buttons button {
+  padding: var(--spacing-lg);
+  font-size: var(--font-xl);
+  font-weight: 500;
+  min-height: 60px;
+}
+
+.btn-function {
+  background-color: var(--color-bg-tertiary);
+}
+
+.btn-operator {
+  background-color: var(--color-operator-bg);
+  color: white;
+}
+
+.btn-operator:hover {
+  background-color: var(--color-operator-hover);
+}
+
+.btn-equals {
+  background-color: var(--color-equals-bg);
+  color: white;
+}
+
+.btn-equals:hover {
+  background-color: var(--color-equals-hover);
+}
+
+.btn-negate {
+  background-color: var(--color-bg-tertiary);
+}

@@ -1,0 +1,99 @@
+.financial-calculator {
+  width: 100%;
+  max-width: 600px;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.calculation-type-selector select {
+  width: 100%;
+  padding: var(--spacing-md);
+  font-size: var(--font-md);
+  font-weight: 600;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.financial-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.input-group label {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.input-group input,
+.input-group select {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-md);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.calculate-btn {
+  padding: var(--spacing-md);
+  font-size: var(--font-lg);
+  font-weight: 600;
+  background-color: var(--color-equals-bg);
+  color: white;
+  border-radius: var(--radius-md);
+}
+
+.calculate-btn:hover {
+  background-color: var(--color-equals-hover);
+}
+
+.result-display {
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  text-align: center;
+}
+
+.result-label {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.result-value {
+  font-size: var(--font-3xl);
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.financial-info {
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+}
+
+.financial-info h3 {
+  font-size: var(--font-md);
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-primary);
+}
+
+.info-content {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
