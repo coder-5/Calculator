@@ -14,6 +14,8 @@ function ProgrammerCalculator({ onAddToHistory }: ProgrammerCalculatorProps) {
   const [value, setValue] = useState('0');
   const [base, setBase] = useState<NumberBase>('decimal');
   const [bitWidth, setBitWidth] = useState<8 | 16 | 32 | 64>(32);
+  const [pendingOperation, setPendingOperation] = useState<string | null>(null);
+  const [firstOperand, setFirstOperand] = useState<string>('');
 
   const handleInput = useCallback((digit: string) => {
     setValue((prev) => (prev === '0' ? digit : prev + digit));
@@ -21,6 +23,8 @@ function ProgrammerCalculator({ onAddToHistory }: ProgrammerCalculatorProps) {
 
   const handleClear = useCallback(() => {
     setValue('0');
+    setPendingOperation(null);
+    setFirstOperand('');
   }, []);
 
   const handleBackspace = useCallback(() => {
@@ -37,80 +41,77 @@ function ProgrammerCalculator({ onAddToHistory }: ProgrammerCalculatorProps) {
     }
   }, [value, base]);
 
-const [pendingOperation, setPendingOperation] = useState<string | null>(null);
-const [firstOperand, setFirstOperand] = useState<string>('');
-
-const handleBitwiseOperation = useCallback((operation: string, operand?: string) => {
-  try {
-    // For binary operations without a second operand, store the pending operation
-    if ((operation === 'AND' || operation === 'OR' || operation === 'XOR') && !operand) {
-      setPendingOperation(operation);
-      setFirstOperand(value);
-      setValue('0');
-      return;
-    }
-
-    const decimalValue = parseInt(value, getRadix(base));
-    let result: number;
-
-    switch (operation) {
-      case 'AND':
-        if (operand) {
-          const op = parseInt(operand, getRadix(base));
-          result = engine.bitwiseAnd(decimalValue, op);
-        } else return;
-        break;
-      case 'OR':
-        if (operand) {
-          const op = parseInt(operand, getRadix(base));
-          result = engine.bitwiseOr(decimalValue, op);
-        } else return;
-        break;
-      case 'XOR':
-        if (operand) {
-          const op = parseInt(operand, getRadix(base));
-          result = engine.bitwiseXor(decimalValue, op);
-        } else return;
-        break;
-      case 'NOT':
-        result = engine.bitwiseNot(decimalValue);
-        break;
-      case 'LSH':
-        result = engine.leftShift(decimalValue, 1);
-        break;
-      case 'RSH':
-        result = engine.rightShift(decimalValue, 1);
-        break;
-      default:
+  const handleBitwiseOperation = useCallback((operation: string, operand?: string) => {
+    try {
+      // For binary operations without a second operand, store the pending operation
+      if ((operation === 'AND' || operation === 'OR' || operation === 'XOR') && !operand) {
+        setPendingOperation(operation);
+        setFirstOperand(value);
+        setValue('0');
         return;
+      }
+
+      const decimalValue = parseInt(value, getRadix(base));
+      let result: number;
+
+      switch (operation) {
+        case 'AND':
+          if (operand) {
+            const op = parseInt(operand, getRadix(base));
+            result = engine.bitwiseAnd(decimalValue, op);
+          } else return;
+          break;
+        case 'OR':
+          if (operand) {
+            const op = parseInt(operand, getRadix(base));
+            result = engine.bitwiseOr(decimalValue, op);
+          } else return;
+          break;
+        case 'XOR':
+          if (operand) {
+            const op = parseInt(operand, getRadix(base));
+            result = engine.bitwiseXor(decimalValue, op);
+          } else return;
+          break;
+        case 'NOT':
+          result = engine.bitwiseNot(decimalValue);
+          break;
+        case 'LSH':
+          result = engine.leftShift(decimalValue, 1);
+          break;
+        case 'RSH':
+          result = engine.rightShift(decimalValue, 1);
+          break;
+        default:
+          return;
+      }
+
+      const newValue = engine.convertBase(result.toString(), 'decimal', base);
+      setValue(newValue);
+
+      const expressionText = operand
+        ? `${operand} ${operation} ${value}`
+        : `${value} ${operation}`;
+
+      onAddToHistory({
+        expression: expressionText,
+        result: newValue,
+        mode: 'programmer',
+      });
+
+      // Reset pending operation state
+      setPendingOperation(null);
+      setFirstOperand('');
+    } catch (err) {
+      console.error('Operation error:', err);
     }
+  }, [value, base, onAddToHistory]);
 
-    const newValue = engine.convertBase(result.toString(), 'decimal', base);
-    setValue(newValue);
-
-    const expressionText = operand 
-      ? `${operand} ${operation} ${value}`
-      : `${value} ${operation}`;
-      
-    onAddToHistory({
-      expression: expressionText,
-      result: newValue,
-      mode: 'programmer',
-    });
-    
-    // Reset pending operation state
-    setPendingOperation(null);
-    setFirstOperand('');
-  } catch (err) {
-    console.error('Operation error:', err);
-  }
-}, [value, base, onAddToHistory]);
-
-const handleEquals = useCallback(() => {
-  if (pendingOperation && firstOperand) {
-    handleBitwiseOperation(pendingOperation, firstOperand);
-  }
-}, [pendingOperation, firstOperand, handleBitwiseOperation]);
+  const handleEquals = useCallback(() => {
+    if (pendingOperation && firstOperand) {
+      handleBitwiseOperation(pendingOperation, firstOperand);
+    }
+  }, [pendingOperation, firstOperand, handleBitwiseOperation]);
 
   function getRadix(base: NumberBase): number {
     switch (base) {
@@ -207,7 +208,8 @@ const handleEquals = useCallback(() => {
         <button onClick={() => handleInput('1')}>1</button>
         <button onClick={() => handleInput('2')}>2</button>
         <button onClick={() => handleInput('3')}>3</button>
-        <button onClick={() => handleInput('0')} style={{ gridColumn: 'span 2' }}>0</button>
+        <button onClick={() => handleInput('0')}>0</button>
+        <button className="btn-equals" onClick={handleEquals}>=</button>
       </div>
     </div>
   );

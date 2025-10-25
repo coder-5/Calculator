@@ -29,20 +29,25 @@ function BasicCalculator({ onAddToHistory, memory }: BasicCalculatorProps) {
     setDisplay(result);
   }, []);
 
-
-const handleOperator = useCallback((operator: string) => {
-  setError('');
-  try {
-    const result = engine.performOperation(operator);
+  const handleClear = useCallback(() => {
+    setError('');
+    const result = engine.clear();
     setDisplay(result);
-    setExpression(engine.getExpression());
-  } catch (err: any) {
-    setError(err.message);
-    // Reset calculator state to prevent inconsistency
-    handleClear();
-  }
-}, [handleClear]);
+    setExpression('');
+  }, []);
 
+  const handleOperator = useCallback((operator: string) => {
+    setError('');
+    try {
+      const result = engine.performOperation(operator);
+      setDisplay(result);
+      setExpression(engine.getExpression());
+    } catch (err: any) {
+      setError(err.message);
+      // Reset calculator state to prevent inconsistency
+      handleClear();
+    }
+  }, [handleClear]);
 
   const handleEquals = useCallback(() => {
     setError('');
@@ -61,13 +66,6 @@ const handleOperator = useCallback((operator: string) => {
       setError(err.message);
     }
   }, [expression, display, onAddToHistory]);
-
-  const handleClear = useCallback(() => {
-    setError('');
-    const result = engine.clear();
-    setDisplay(result);
-    setExpression('');
-  }, []);
 
   const handleClearEntry = useCallback(() => {
     setError('');
