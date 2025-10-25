@@ -1,6 +1,11 @@
 import { useState, useCallback } from 'react';
 import { ScientificCalculatorEngine } from '../../engines/scientificEngine';
 import { HistoryEntry } from '../../../shared/types';
+import {
+  sanitizeMathExpression,
+  isValidMathExpression,
+  limitInputLength
+} from '../../utils/validation';
 import './ScientificCalculator.css';
 
 interface ScientificCalculatorProps {
@@ -18,12 +23,15 @@ function ScientificCalculator({ onAddToHistory, memory }: ScientificCalculatorPr
 
   const handleInput = useCallback((value: string) => {
     setError('');
+    const newExpression = (expression + value);
+    const limited = limitInputLength(newExpression, 100);
+
     if (display === '0' && value !== '.') {
       setDisplay(value);
-      setExpression(value);
+      setExpression(limited);
     } else {
       setDisplay(display + value);
-      setExpression(expression + value);
+      setExpression(limited);
     }
   }, [display, expression]);
 
@@ -72,7 +80,15 @@ function ScientificCalculator({ onAddToHistory, memory }: ScientificCalculatorPr
   const handleEquals = useCallback(() => {
     setError('');
     try {
-      const result = engine.evaluate(expression);
+      // Sanitize and validate the expression
+      const sanitized = sanitizeMathExpression(expression);
+
+      if (!isValidMathExpression(sanitized)) {
+        setError('Invalid mathematical expression');
+        return;
+      }
+
+      const result = engine.evaluate(sanitized);
       setDisplay(result.toString());
 
       onAddToHistory({

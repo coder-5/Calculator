@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { FinancialCalculatorEngine } from '../../engines/financialEngine';
 import { HistoryEntry } from '../../../shared/types';
+import { validateFinancialInput } from '../../utils/validation';
 import './FinancialCalculator.css';
 
 interface FinancialCalculatorProps {
@@ -46,14 +47,37 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
       let expression = '';
 
       switch (calculationType) {
-        case 'loan':
+        case 'loan': {
+          const principalValue = parseFloat(principal);
+          const rateValue = parseFloat(annualRate);
+          const yearsValue = parseFloat(years);
+
+          // Validate inputs
+          const principalValidation = validateFinancialInput(principalValue, 'Principal');
+          const rateValidation = validateFinancialInput(rateValue, 'Rate');
+          const yearsValidation = validateFinancialInput(yearsValue, 'Years');
+
+          if (!principalValidation.valid) {
+            setResult(principalValidation.error || 'Invalid input');
+            return;
+          }
+          if (!rateValidation.valid) {
+            setResult(rateValidation.error || 'Invalid input');
+            return;
+          }
+          if (!yearsValidation.valid) {
+            setResult(yearsValidation.error || 'Invalid input');
+            return;
+          }
+
           calculationResult = engine.calculateLoanPayment(
-            parseFloat(principal),
-            parseFloat(annualRate),
-            parseFloat(years)
+            principalValue,
+            rateValue,
+            yearsValue
           );
           expression = `Loan Payment: Principal=$${principal}, Rate=${annualRate}%, Years=${years}`;
           break;
+        }
 
         case 'compound_interest':
           calculationResult = engine.calculateCompoundInterest(

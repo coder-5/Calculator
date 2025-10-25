@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -12,6 +12,12 @@ import {
 } from 'chart.js';
 import { evaluate } from 'mathjs';
 import { GraphFunction, HistoryEntry } from '../../../shared/types';
+import {
+  sanitizeMathExpression,
+  isValidMathExpression,
+  validateGraphRange,
+  debounce,
+} from '../../utils/validation';
 import './GraphingCalculator.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
@@ -31,17 +37,26 @@ function GraphingCalculator({ onAddToHistory }: GraphingCalculatorProps) {
   const [yMin, setYMin] = useState(-10);
   const [yMax, setYMax] = useState(10);
   const [error, setError] = useState('');
+  const [rangeError, setRangeError] = useState('');
 
   const addFunction = useCallback(() => {
     if (!input.trim()) return;
 
     try {
+      // Sanitize and validate the expression
+      const sanitized = sanitizeMathExpression(input);
+
+      if (!isValidMathExpression(sanitized)) {
+        setError('Invalid function expression');
+        return;
+      }
+
       // Test if the function is valid
-      evaluate(input.replace(/x/g, '0'));
+      evaluate(sanitized.replace(/x/g, '0'));
 
       const newFunc: GraphFunction = {
         id: crypto.randomUUID(),
-        expression: input,
+        expression: sanitized,
         color: COLORS[functions.length % COLORS.length],
         visible: true,
       };
@@ -51,7 +66,7 @@ function GraphingCalculator({ onAddToHistory }: GraphingCalculatorProps) {
       setError('');
 
       onAddToHistory({
-        expression: `f(x) = ${input}`,
+        expression: `f(x) = ${sanitized}`,
         result: 'Function added to graph',
         mode: 'graphing',
       });
@@ -70,7 +85,22 @@ function GraphingCalculator({ onAddToHistory }: GraphingCalculatorProps) {
     );
   }, []);
 
-  const generateData = useCallback(() => {
+  // Validate ranges
+  useEffect(() => {
+    const xValidation = validateGraphRange(xMin, xMax);
+    const yValidation = validateGraphRange(yMin, yMax);
+
+    if (!xValidation.valid) {
+      setRangeError(xValidation.error || '');
+    } else if (!yValidation.valid) {
+      setRangeError(yValidation.error || '');
+    } else {
+      setRangeError('');
+    }
+  }, [xMin, xMax, yMin, yMax]);
+
+  // Memoize generated data for performance
+  const generateData = useMemo(() => {
     const points = 200;
     const step = (xMax - xMin) / points;
     const xValues: number[] = [];
@@ -155,7 +185,7 @@ function GraphingCalculator({ onAddToHistory }: GraphingCalculatorProps) {
   return (
     <div className="graphing-calculator">
       <div className="graph-container">
-        <Line data={generateData()} options={chartOptions} />
+        <Line data={generateData} options={chartOptions} />
       </div>
 
       <div className="graph-controls">
@@ -166,11 +196,13 @@ function GraphingCalculator({ onAddToHistory }: GraphingCalculatorProps) {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && addFunction()}
             placeholder="Enter function (e.g., x^2, sin(x), etc.)"
+            aria-label="Function expression input"
           />
           <button onClick={addFunction}>Add Function</button>
         </div>
 
         {error && <div className="error-message">{error}</div>}
+        {rangeError && <div className="error-message">{rangeError}</div>}
 
         <div className="range-controls">
           <div className="range-group">

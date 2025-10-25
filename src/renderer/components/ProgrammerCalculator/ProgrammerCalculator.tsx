@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { ProgrammerCalculatorEngine } from '../../engines/programmerEngine';
 import { NumberBase, HistoryEntry } from '../../../shared/types';
+import { isValidDigitForBase, limitInputLength } from '../../utils/validation';
 import './ProgrammerCalculator.css';
 
 interface ProgrammerCalculatorProps {
@@ -18,8 +19,17 @@ function ProgrammerCalculator({ onAddToHistory }: ProgrammerCalculatorProps) {
   const [firstOperand, setFirstOperand] = useState<string>('');
 
   const handleInput = useCallback((digit: string) => {
-    setValue((prev) => (prev === '0' ? digit : prev + digit));
-  }, []);
+    // Validate digit for current base
+    if (!isValidDigitForBase(digit, base)) {
+      return;
+    }
+
+    // Limit input length to prevent overflow
+    const newValue = value === '0' ? digit : value + digit;
+    const limited = limitInputLength(newValue, 32);
+
+    setValue(limited);
+  }, [base, value]);
 
   const handleClear = useCallback(() => {
     setValue('0');
