@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { ProgrammerCalculatorEngine } from '../../engines/programmerEngine';
 import { NumberBase, HistoryEntry } from '../../../shared/types';
 import { isValidDigitForBase, limitInputLength } from '../../utils/validation';
+import { useKeyboard } from '../../hooks/useKeyboard';
 import './ProgrammerCalculator.css';
 
 interface ProgrammerCalculatorProps {
@@ -133,6 +134,14 @@ function ProgrammerCalculator({ onAddToHistory }: ProgrammerCalculatorProps) {
     }
   }
 
+  // Keyboard support
+  useKeyboard({
+    onDigit: handleInput,
+    onEquals: handleEquals,
+    onClear: handleClear,
+    onBackspace: handleBackspace,
+  });
+
   const renderBinaryRepresentation = () => {
     try {
       const decValue = parseInt(value, getRadix(base));
@@ -145,89 +154,99 @@ function ProgrammerCalculator({ onAddToHistory }: ProgrammerCalculatorProps) {
   };
 
   return (
-    <div className="programmer-calculator">
-      <div className="calculator-display-area">
-        <div className="base-selector">
+    <div className="programmer-calculator" role="region" aria-label="Programmer calculator">
+      <div className="calculator-display-area" role="status" aria-live="polite" aria-atomic="true">
+        <div className="base-selector" role="group" aria-label="Number base selector">
           <button
             className={base === 'binary' ? 'active' : ''}
             onClick={() => handleBaseChange('binary')}
+            aria-label="Binary base"
+            aria-pressed={base === 'binary'}
           >
             BIN
           </button>
           <button
             className={base === 'octal' ? 'active' : ''}
             onClick={() => handleBaseChange('octal')}
+            aria-label="Octal base"
+            aria-pressed={base === 'octal'}
           >
             OCT
           </button>
           <button
             className={base === 'decimal' ? 'active' : ''}
             onClick={() => handleBaseChange('decimal')}
+            aria-label="Decimal base"
+            aria-pressed={base === 'decimal'}
           >
             DEC
           </button>
           <button
             className={base === 'hexadecimal' ? 'active' : ''}
             onClick={() => handleBaseChange('hexadecimal')}
+            aria-label="Hexadecimal base"
+            aria-pressed={base === 'hexadecimal'}
           >
             HEX
           </button>
         </div>
 
-        <div className="binary-display">{renderBinaryRepresentation()}</div>
-        <div className="display">{value}</div>
+        <div className="binary-display" aria-label="Binary representation">{renderBinaryRepresentation()}</div>
+        <div className="display" aria-label="Calculator display">{value}</div>
       </div>
 
-      <div className="bit-width-selector">
+      <div className="bit-width-selector" role="group" aria-label="Bit width selector">
         <label>Bit Width:</label>
         {[8, 16, 32, 64].map((width) => (
           <button
             key={width}
             className={bitWidth === width ? 'active' : ''}
             onClick={() => setBitWidth(width as any)}
+            aria-label={`${width} bit`}
+            aria-pressed={bitWidth === width}
           >
             {width}
           </button>
         ))}
       </div>
 
-      <div className="programmer-buttons">
-        <button className="btn-function" onClick={() => handleBitwiseOperation('AND')}>AND</button>
-        <button className="btn-function" onClick={() => handleBitwiseOperation('OR')}>OR</button>
-        <button className="btn-function" onClick={() => handleBitwiseOperation('XOR')}>XOR</button>
-        <button className="btn-function" onClick={() => handleBitwiseOperation('NOT')}>NOT</button>
-        <button className="btn-function" onClick={() => handleBitwiseOperation('LSH')}>{'<<'}</button>
-        <button className="btn-function" onClick={() => handleBitwiseOperation('RSH')}>{'>>'}</button>
+      <div className="programmer-buttons" role="group" aria-label="Calculator buttons">
+        <button className="btn-function" onClick={() => handleBitwiseOperation('AND')} aria-label="Bitwise AND">AND</button>
+        <button className="btn-function" onClick={() => handleBitwiseOperation('OR')} aria-label="Bitwise OR">OR</button>
+        <button className="btn-function" onClick={() => handleBitwiseOperation('XOR')} aria-label="Bitwise XOR">XOR</button>
+        <button className="btn-function" onClick={() => handleBitwiseOperation('NOT')} aria-label="Bitwise NOT">NOT</button>
+        <button className="btn-function" onClick={() => handleBitwiseOperation('LSH')} aria-label="Left shift">{'<<'}</button>
+        <button className="btn-function" onClick={() => handleBitwiseOperation('RSH')} aria-label="Right shift">{'>>'}</button>
 
-        <button onClick={() => handleInput('A')} disabled={base !== 'hexadecimal'}>A</button>
-        <button onClick={() => handleInput('B')} disabled={base !== 'hexadecimal'}>B</button>
-        <button onClick={() => handleInput('C')} disabled={base !== 'hexadecimal'}>C</button>
-        <button onClick={() => handleInput('D')} disabled={base !== 'hexadecimal'}>D</button>
-        <button onClick={() => handleInput('E')} disabled={base !== 'hexadecimal'}>E</button>
-        <button onClick={() => handleInput('F')} disabled={base !== 'hexadecimal'}>F</button>
+        <button onClick={() => handleInput('A')} disabled={base !== 'hexadecimal'} aria-label="Hex digit A">A</button>
+        <button onClick={() => handleInput('B')} disabled={base !== 'hexadecimal'} aria-label="Hex digit B">B</button>
+        <button onClick={() => handleInput('C')} disabled={base !== 'hexadecimal'} aria-label="Hex digit C">C</button>
+        <button onClick={() => handleInput('D')} disabled={base !== 'hexadecimal'} aria-label="Hex digit D">D</button>
+        <button onClick={() => handleInput('E')} disabled={base !== 'hexadecimal'} aria-label="Hex digit E">E</button>
+        <button onClick={() => handleInput('F')} disabled={base !== 'hexadecimal'} aria-label="Hex digit F">F</button>
 
-        <button onClick={() => handleInput('7')} disabled={base === 'binary'}>7</button>
-        <button onClick={() => handleInput('8')} disabled={base === 'binary' || base === 'octal'}>8</button>
-        <button onClick={() => handleInput('9')} disabled={base === 'binary' || base === 'octal'}>9</button>
-        <button className="btn-function" onClick={handleBackspace}>⌫</button>
-        <button className="btn-function" onClick={handleClear}>C</button>
-        <button className="btn-equals" onClick={handleEquals}>=</button>
+        <button onClick={() => handleInput('7')} disabled={base === 'binary'} aria-label="Seven">7</button>
+        <button onClick={() => handleInput('8')} disabled={base === 'binary' || base === 'octal'} aria-label="Eight">8</button>
+        <button onClick={() => handleInput('9')} disabled={base === 'binary' || base === 'octal'} aria-label="Nine">9</button>
+        <button className="btn-function" onClick={handleBackspace} aria-label="Backspace">⌫</button>
+        <button className="btn-function" onClick={handleClear} aria-label="Clear">C</button>
+        <button className="btn-equals" onClick={handleEquals} aria-label="Equals">=</button>
 
-        <button onClick={() => handleInput('4')}>4</button>
-        <button onClick={() => handleInput('5')}>5</button>
-        <button onClick={() => handleInput('6')}>6</button>
-        <div></div>
-        <div></div>
-        <div></div>
-
-        <button onClick={() => handleInput('1')}>1</button>
-        <button onClick={() => handleInput('2')}>2</button>
-        <button onClick={() => handleInput('3')}>3</button>
+        <button onClick={() => handleInput('4')} aria-label="Four">4</button>
+        <button onClick={() => handleInput('5')} aria-label="Five">5</button>
+        <button onClick={() => handleInput('6')} aria-label="Six">6</button>
         <div></div>
         <div></div>
         <div></div>
 
-        <button onClick={() => handleInput('0')} style={{ gridColumn: 'span 6' }}>0</button>
+        <button onClick={() => handleInput('1')} aria-label="One">1</button>
+        <button onClick={() => handleInput('2')} aria-label="Two">2</button>
+        <button onClick={() => handleInput('3')} aria-label="Three">3</button>
+        <div></div>
+        <div></div>
+        <div></div>
+
+        <button onClick={() => handleInput('0')} style={{ gridColumn: 'span 6' }} aria-label="Zero">0</button>
       </div>
     </div>
   );

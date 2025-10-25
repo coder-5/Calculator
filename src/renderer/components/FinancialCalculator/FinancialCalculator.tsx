@@ -175,6 +175,7 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
                 value={principal}
                 onChange={(e) => setPrincipal(e.target.value)}
                 placeholder="10000"
+                aria-label="Principal amount in dollars"
               />
             </div>
             <div className="input-group">
@@ -185,6 +186,7 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
                 onChange={(e) => setAnnualRate(e.target.value)}
                 placeholder="5"
                 step="0.1"
+                aria-label="Annual interest rate percentage"
               />
             </div>
             <div className="input-group">
@@ -194,6 +196,7 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
                 value={years}
                 onChange={(e) => setYears(e.target.value)}
                 placeholder="5"
+                aria-label="Number of years"
               />
             </div>
             {(calculationType === 'compound_interest' || calculationType === 'future_value') && (
@@ -202,6 +205,7 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
                 <select
                   value={compoundingFrequency}
                   onChange={(e) => setCompoundingFrequency(e.target.value)}
+                  aria-label="Compounding frequency per year"
                 >
                   <option value="1">Annually</option>
                   <option value="2">Semi-annually</option>
@@ -224,6 +228,7 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
                 value={initialInvestment}
                 onChange={(e) => setInitialInvestment(e.target.value)}
                 placeholder="10000"
+                aria-label="Initial investment in dollars"
               />
             </div>
             <div className="input-group">
@@ -233,6 +238,7 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
                 value={finalValue}
                 onChange={(e) => setFinalValue(e.target.value)}
                 placeholder="15000"
+                aria-label="Final value in dollars"
               />
             </div>
           </>
@@ -248,6 +254,7 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
                 value={cost}
                 onChange={(e) => setCost(e.target.value)}
                 placeholder="50000"
+                aria-label="Asset cost in dollars"
               />
             </div>
             <div className="input-group">
@@ -257,6 +264,7 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
                 value={salvageValue}
                 onChange={(e) => setSalvageValue(e.target.value)}
                 placeholder="5000"
+                aria-label="Salvage value in dollars"
               />
             </div>
             <div className="input-group">
@@ -266,6 +274,7 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
                 value={usefulLife}
                 onChange={(e) => setUsefulLife(e.target.value)}
                 placeholder="10"
+                aria-label="Useful life in years"
               />
             </div>
           </>
@@ -281,6 +290,7 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
                 value={finalValue}
                 onChange={(e) => setFinalValue(e.target.value)}
                 placeholder="20000"
+                aria-label="Future value in dollars"
               />
             </div>
             <div className="input-group">
@@ -291,6 +301,7 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
                 onChange={(e) => setAnnualRate(e.target.value)}
                 placeholder="5"
                 step="0.1"
+                aria-label="Annual interest rate percentage"
               />
             </div>
             <div className="input-group">
@@ -300,6 +311,7 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
                 value={years}
                 onChange={(e) => setYears(e.target.value)}
                 placeholder="5"
+                aria-label="Number of years"
               />
             </div>
           </>
@@ -311,7 +323,7 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
   };
 
   return (
-    <div className="financial-calculator">
+    <div className="financial-calculator" role="region" aria-label="Financial calculator">
       <div className="calculation-type-selector">
         <select
           value={calculationType}
@@ -319,6 +331,7 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
             setCalculationType(e.target.value as CalculationType);
             setResult('');
           }}
+          aria-label="Calculation type selector"
         >
           <option value="loan">Loan Payment</option>
           <option value="compound_interest">Compound Interest</option>
@@ -330,22 +343,22 @@ function FinancialCalculator({ onAddToHistory }: FinancialCalculatorProps) {
         </select>
       </div>
 
-      <div className="financial-inputs">{renderInputs()}</div>
+      <div className="financial-inputs" role="group" aria-label="Financial calculation inputs">{renderInputs()}</div>
 
-      <button className="calculate-btn" onClick={calculate}>
+      <button className="calculate-btn" onClick={calculate} aria-label="Calculate result">
         Calculate
       </button>
 
       {result && (
-        <div className="result-display">
+        <div className="result-display" role="status" aria-live="polite" aria-atomic="true">
           <div className="result-label">Result:</div>
-          <div className="result-value">
+          <div className="result-value" aria-label="Calculation result">
             {result.startsWith('Error') ? result : `$${result}`}
           </div>
         </div>
       )}
 
-      <div className="financial-info">
+      <div className="financial-info" role="complementary" aria-label="Calculation information">
         <h3>Information</h3>
         <div className="info-content">
           {calculationType === 'loan' && (

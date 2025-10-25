@@ -112,8 +112,14 @@ function App() {
             <ErrorBoundary fallbackMessage="Error displaying memory.">
               <Memory
                 memory={memoryHook.memory}
+                activeSlot={memoryHook.activeSlot}
                 onClear={memoryHook.memoryClear}
                 onClose={() => setShowMemory(false)}
+                onRecall={(slotIndex) => {
+                  // Recall will be handled by individual calculators
+                  console.log(`Recall from slot ${slotIndex}`);
+                }}
+                onSelectSlot={memoryHook.setMemorySlot}
               />
             </ErrorBoundary>
           </div>

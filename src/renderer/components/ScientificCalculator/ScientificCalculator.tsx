@@ -6,6 +6,7 @@ import {
   isValidMathExpression,
   limitInputLength
 } from '../../utils/validation';
+import { useKeyboard } from '../../hooks/useKeyboard';
 import './ScientificCalculator.css';
 
 interface ScientificCalculatorProps {
@@ -141,68 +142,94 @@ function ScientificCalculator({ onAddToHistory, memory }: ScientificCalculatorPr
     navigator.clipboard.writeText(display);
   };
 
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      handleInput(text);
+    } catch (err) {
+      console.error('Failed to paste:', err);
+    }
+  };
+
+  // Keyboard support
+  useKeyboard({
+    onDigit: handleInput,
+    onOperator: (op) => handleInput(op),
+    onEquals: handleEquals,
+    onClear: handleClear,
+    onBackspace: handleBackspace,
+    onDecimal: () => handleInput('.'),
+    onFunction: handleFunction,
+    onParenthesis: handleInput,
+    onMemoryClear: handleMemoryClear,
+    onMemoryRecall: handleMemoryRecall,
+    onMemoryAdd: handleMemoryAdd,
+    onCopy: handleCopy,
+    onPaste: handlePaste,
+  });
+
   return (
-    <div className="scientific-calculator">
-      <div className="calculator-display-area">
-        {expression && <div className="expression">{expression}</div>}
-        <div className="display">{error || display}</div>
-        {error && <div className="error-indicator">Error</div>}
+    <div className="scientific-calculator" role="region" aria-label="Scientific calculator">
+      <div className="calculator-display-area" role="status" aria-live="polite" aria-atomic="true">
+        {expression && <div className="expression" aria-label="Expression">{expression}</div>}
+        <div className="display" aria-label="Calculator display">{error || display}</div>
+        {error && <div className="error-indicator" role="alert">Error</div>}
       </div>
 
-      <div className="calculator-controls">
-        <button onClick={toggleAngleMode} className="mode-indicator">
+      <div className="calculator-controls" role="group" aria-label="Calculator controls">
+        <button onClick={toggleAngleMode} className="mode-indicator" aria-label={`Angle mode: ${angleMode}, click to toggle`}>
           {angleMode.toUpperCase()}
         </button>
-        <button onClick={handleCopy} title="Copy">📋</button>
-        <button onClick={handleMemoryClear} disabled={!memory.hasMemory}>MC</button>
-        <button onClick={handleMemoryRecall} disabled={!memory.hasMemory}>MR</button>
-        <button onClick={handleMemoryAdd}>M+</button>
+        <button onClick={handleCopy} title="Copy" aria-label="Copy result to clipboard">📋</button>
+        <button onClick={handleMemoryClear} disabled={!memory.hasMemory} aria-label="Memory clear">MC</button>
+        <button onClick={handleMemoryRecall} disabled={!memory.hasMemory} aria-label="Memory recall">MR</button>
+        <button onClick={handleMemoryAdd} aria-label="Memory add">M+</button>
       </div>
 
-      <div className="scientific-buttons">
-        <button className="btn-function" onClick={() => handleFunction('sin')}>sin</button>
-        <button className="btn-function" onClick={() => handleFunction('cos')}>cos</button>
-        <button className="btn-function" onClick={() => handleFunction('tan')}>tan</button>
-        <button className="btn-function" onClick={() => handleFunction('asin')}>asin</button>
-        <button className="btn-function" onClick={() => handleFunction('acos')}>acos</button>
+      <div className="scientific-buttons" role="group" aria-label="Calculator buttons">
+        <button className="btn-function" onClick={() => handleFunction('sin')} aria-label="Sine">sin</button>
+        <button className="btn-function" onClick={() => handleFunction('cos')} aria-label="Cosine">cos</button>
+        <button className="btn-function" onClick={() => handleFunction('tan')} aria-label="Tangent">tan</button>
+        <button className="btn-function" onClick={() => handleFunction('asin')} aria-label="Arc sine">asin</button>
+        <button className="btn-function" onClick={() => handleFunction('acos')} aria-label="Arc cosine">acos</button>
 
-        <button className="btn-function" onClick={() => handleFunction('atan')}>atan</button>
-        <button className="btn-function" onClick={() => handleFunction('log')}>log</button>
-        <button className="btn-function" onClick={() => handleFunction('ln')}>ln</button>
-        <button className="btn-function" onClick={() => handleFunction('exp')}>exp</button>
-        <button className="btn-function" onClick={() => handleFunction('pi')}>π</button>
+        <button className="btn-function" onClick={() => handleFunction('atan')} aria-label="Arc tangent">atan</button>
+        <button className="btn-function" onClick={() => handleFunction('log')} aria-label="Logarithm base 10">log</button>
+        <button className="btn-function" onClick={() => handleFunction('ln')} aria-label="Natural logarithm">ln</button>
+        <button className="btn-function" onClick={() => handleFunction('exp')} aria-label="Exponential">exp</button>
+        <button className="btn-function" onClick={() => handleFunction('pi')} aria-label="Pi constant">π</button>
 
-        <button className="btn-function" onClick={() => handleFunction('e')}>e</button>
-        <button className="btn-function" onClick={() => handleFunction('sqrt')}>√</button>
-        <button className="btn-function" onClick={() => handleFunction('cbrt')}>∛</button>
-        <button className="btn-function" onClick={() => handleFunction('^')}>x^y</button>
-        <button className="btn-function" onClick={() => handleFunction('!')}>n!</button>
+        <button className="btn-function" onClick={() => handleFunction('e')} aria-label="Euler's number">e</button>
+        <button className="btn-function" onClick={() => handleFunction('sqrt')} aria-label="Square root">√</button>
+        <button className="btn-function" onClick={() => handleFunction('cbrt')} aria-label="Cube root">∛</button>
+        <button className="btn-function" onClick={() => handleFunction('^')} aria-label="Power">x^y</button>
+        <button className="btn-function" onClick={() => handleFunction('!')} aria-label="Factorial">n!</button>
 
-        <button className="btn-function" onClick={() => handleFunction('abs')}>|x|</button>
-        <button className="btn-function" onClick={() => handleInput('(')}>(</button>
-        <button className="btn-function" onClick={() => handleInput(')')}>)</button>
-        <button className="btn-function" onClick={handleBackspace}>⌫</button>
-        <button className="btn-function" onClick={handleClear}>C</button>
+        <button className="btn-function" onClick={() => handleFunction('abs')} aria-label="Absolute value">|x|</button>
+        <button className="btn-function" onClick={() => handleInput('(')} aria-label="Left parenthesis">(</button>
+        <button className="btn-function" onClick={() => handleInput(')')} aria-label="Right parenthesis">)</button>
+        <button className="btn-function" onClick={handleBackspace} aria-label="Backspace">⌫</button>
+        <button className="btn-function" onClick={handleClear} aria-label="Clear">C</button>
 
-        <button onClick={() => handleInput('7')}>7</button>
-        <button onClick={() => handleInput('8')}>8</button>
-        <button onClick={() => handleInput('9')}>9</button>
-        <button className="btn-operator" onClick={() => handleInput('/')}>÷</button>
-        <button className="btn-operator" onClick={() => handleInput('*')}>×</button>
+        <button onClick={() => handleInput('7')} aria-label="Seven">7</button>
+        <button onClick={() => handleInput('8')} aria-label="Eight">8</button>
+        <button onClick={() => handleInput('9')} aria-label="Nine">9</button>
+        <button className="btn-operator" onClick={() => handleInput('/')} aria-label="Divide">÷</button>
+        <button className="btn-operator" onClick={() => handleInput('*')} aria-label="Multiply">×</button>
 
-        <button onClick={() => handleInput('4')}>4</button>
-        <button onClick={() => handleInput('5')}>5</button>
-        <button onClick={() => handleInput('6')}>6</button>
-        <button className="btn-operator" onClick={() => handleInput('-')}>−</button>
-        <button className="btn-operator" onClick={() => handleInput('+')}>+</button>
+        <button onClick={() => handleInput('4')} aria-label="Four">4</button>
+        <button onClick={() => handleInput('5')} aria-label="Five">5</button>
+        <button onClick={() => handleInput('6')} aria-label="Six">6</button>
+        <button className="btn-operator" onClick={() => handleInput('-')} aria-label="Subtract">−</button>
+        <button className="btn-operator" onClick={() => handleInput('+')} aria-label="Add">+</button>
 
-        <button onClick={() => handleInput('1')}>1</button>
-        <button onClick={() => handleInput('2')}>2</button>
-        <button onClick={() => handleInput('3')}>3</button>
-        <button onClick={() => handleInput('.')}>.</button>
-        <button className="btn-equals" onClick={handleEquals}>=</button>
+        <button onClick={() => handleInput('1')} aria-label="One">1</button>
+        <button onClick={() => handleInput('2')} aria-label="Two">2</button>
+        <button onClick={() => handleInput('3')} aria-label="Three">3</button>
+        <button onClick={() => handleInput('.')} aria-label="Decimal point">.</button>
+        <button className="btn-equals" onClick={handleEquals} aria-label="Equals">=</button>
 
-        <button onClick={() => handleInput('0')} style={{ gridColumn: 'span 2' }}>0</button>
+        <button onClick={() => handleInput('0')} style={{ gridColumn: 'span 2' }} aria-label="Zero">0</button>
       </div>
     </div>
   );

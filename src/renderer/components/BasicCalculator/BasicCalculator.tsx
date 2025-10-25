@@ -129,6 +129,18 @@ function BasicCalculator({ onAddToHistory, memory }: BasicCalculatorProps) {
     onClear: handleClear,
     onBackspace: handleBackspace,
     onDecimal: handleDecimal,
+    onPercentage: handlePercentage,
+    onSquareRoot: handleSquareRoot,
+    onSquare: handleSquare,
+    onNegate: handleNegate,
+    onReciprocal: () => handleOperator('1/x'),
+    onMemoryClear: handleMemoryClear,
+    onMemoryRecall: handleMemoryRecall,
+    onMemoryStore: handleMemoryStore,
+    onMemoryAdd: handleMemoryAdd,
+    onMemorySubtract: handleMemorySubtract,
+    onCopy: handleCopy,
+    onPaste: handlePaste,
   });
 
   // Memory functions
@@ -159,56 +171,56 @@ function BasicCalculator({ onAddToHistory, memory }: BasicCalculatorProps) {
   };
 
   return (
-    <div className="basic-calculator">
-      <div className="calculator-display-area">
-        {expression && <div className="expression">{expression}</div>}
-        <div className="display">{error || display}</div>
-        {error && <div className="error-indicator">Error</div>}
+    <div className="basic-calculator" role="region" aria-label="Basic calculator">
+      <div className="calculator-display-area" role="status" aria-live="polite" aria-atomic="true">
+        {expression && <div className="expression" aria-label="Expression">{expression}</div>}
+        <div className="display" aria-label="Calculator display">{error || display}</div>
+        {error && <div className="error-indicator" role="alert">Error</div>}
       </div>
 
       <div className="calculator-controls">
-        <button className="control-btn" onClick={handleCopy} title="Copy">📋</button>
-        <button className="control-btn" onClick={handlePaste} title="Paste">📄</button>
+        <button className="control-btn" onClick={handleCopy} title="Copy" aria-label="Copy result to clipboard">📋</button>
+        <button className="control-btn" onClick={handlePaste} title="Paste" aria-label="Paste from clipboard">📄</button>
       </div>
 
-      <div className="calculator-memory">
-        <button onClick={handleMemoryClear} disabled={!memory.hasMemory}>MC</button>
-        <button onClick={handleMemoryRecall} disabled={!memory.hasMemory}>MR</button>
-        <button onClick={handleMemoryStore}>MS</button>
-        <button onClick={handleMemoryAdd}>M+</button>
-        <button onClick={handleMemorySubtract}>M-</button>
+      <div className="calculator-memory" role="group" aria-label="Memory functions">
+        <button onClick={handleMemoryClear} disabled={!memory.hasMemory} aria-label="Memory clear">MC</button>
+        <button onClick={handleMemoryRecall} disabled={!memory.hasMemory} aria-label="Memory recall">MR</button>
+        <button onClick={handleMemoryStore} aria-label="Memory store">MS</button>
+        <button onClick={handleMemoryAdd} aria-label="Memory add">M+</button>
+        <button onClick={handleMemorySubtract} aria-label="Memory subtract">M-</button>
       </div>
 
-      <div className="calculator-buttons">
-        <button className="btn-function" onClick={handlePercentage}>%</button>
-        <button className="btn-function" onClick={handleClearEntry}>CE</button>
-        <button className="btn-function" onClick={handleClear}>C</button>
-        <button className="btn-function" onClick={handleBackspace}>⌫</button>
+      <div className="calculator-buttons" role="group" aria-label="Calculator buttons">
+        <button className="btn-function" onClick={handlePercentage} aria-label="Percentage">%</button>
+        <button className="btn-function" onClick={handleClearEntry} aria-label="Clear entry">CE</button>
+        <button className="btn-function" onClick={handleClear} aria-label="Clear all">C</button>
+        <button className="btn-function" onClick={handleBackspace} aria-label="Backspace">⌫</button>
 
-        <button className="btn-function" onClick={() => handleOperator('1/x')}>1/x</button>
-        <button className="btn-function" onClick={handleSquare}>x²</button>
-        <button className="btn-function" onClick={handleSquareRoot}>√</button>
-        <button className="btn-operator" onClick={() => handleOperator('/')}>÷</button>
+        <button className="btn-function" onClick={() => handleOperator('1/x')} aria-label="Reciprocal">1/x</button>
+        <button className="btn-function" onClick={handleSquare} aria-label="Square">x²</button>
+        <button className="btn-function" onClick={handleSquareRoot} aria-label="Square root">√</button>
+        <button className="btn-operator" onClick={() => handleOperator('/')} aria-label="Divide">÷</button>
 
-        <button onClick={() => handleDigit('7')}>7</button>
-        <button onClick={() => handleDigit('8')}>8</button>
-        <button onClick={() => handleDigit('9')}>9</button>
-        <button className="btn-operator" onClick={() => handleOperator('*')}>×</button>
+        <button onClick={() => handleDigit('7')} aria-label="Seven">7</button>
+        <button onClick={() => handleDigit('8')} aria-label="Eight">8</button>
+        <button onClick={() => handleDigit('9')} aria-label="Nine">9</button>
+        <button className="btn-operator" onClick={() => handleOperator('*')} aria-label="Multiply">×</button>
 
-        <button onClick={() => handleDigit('4')}>4</button>
-        <button onClick={() => handleDigit('5')}>5</button>
-        <button onClick={() => handleDigit('6')}>6</button>
-        <button className="btn-operator" onClick={() => handleOperator('-')}>−</button>
+        <button onClick={() => handleDigit('4')} aria-label="Four">4</button>
+        <button onClick={() => handleDigit('5')} aria-label="Five">5</button>
+        <button onClick={() => handleDigit('6')} aria-label="Six">6</button>
+        <button className="btn-operator" onClick={() => handleOperator('-')} aria-label="Subtract">−</button>
 
-        <button onClick={() => handleDigit('1')}>1</button>
-        <button onClick={() => handleDigit('2')}>2</button>
-        <button onClick={() => handleDigit('3')}>3</button>
-        <button className="btn-operator" onClick={() => handleOperator('+')}>+</button>
+        <button onClick={() => handleDigit('1')} aria-label="One">1</button>
+        <button onClick={() => handleDigit('2')} aria-label="Two">2</button>
+        <button onClick={() => handleDigit('3')} aria-label="Three">3</button>
+        <button className="btn-operator" onClick={() => handleOperator('+')} aria-label="Add">+</button>
 
-        <button className="btn-negate" onClick={handleNegate}>+/−</button>
-        <button onClick={() => handleDigit('0')}>0</button>
-        <button onClick={handleDecimal}>.</button>
-        <button className="btn-equals" onClick={handleEquals}>=</button>
+        <button className="btn-negate" onClick={handleNegate} aria-label="Negate">+/−</button>
+        <button onClick={() => handleDigit('0')} aria-label="Zero">0</button>
+        <button onClick={handleDecimal} aria-label="Decimal point">.</button>
+        <button className="btn-equals" onClick={handleEquals} aria-label="Equals">=</button>
       </div>
     </div>
   );

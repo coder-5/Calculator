@@ -183,8 +183,8 @@ function GraphingCalculator({ onAddToHistory }: GraphingCalculatorProps) {
   };
 
   return (
-    <div className="graphing-calculator">
-      <div className="graph-container">
+    <div className="graphing-calculator" role="region" aria-label="Graphing calculator">
+      <div className="graph-container" role="img" aria-label="Function graph">
         <Line data={generateData} options={chartOptions} />
       </div>
 
@@ -198,13 +198,13 @@ function GraphingCalculator({ onAddToHistory }: GraphingCalculatorProps) {
             placeholder="Enter function (e.g., x^2, sin(x), etc.)"
             aria-label="Function expression input"
           />
-          <button onClick={addFunction}>Add Function</button>
+          <button onClick={addFunction} aria-label="Add function to graph">Add Function</button>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
-        {rangeError && <div className="error-message">{rangeError}</div>}
+        {error && <div className="error-message" role="alert">{error}</div>}
+        {rangeError && <div className="error-message" role="alert">{rangeError}</div>}
 
-        <div className="range-controls">
+        <div className="range-controls" role="group" aria-label="Graph range controls">
           <div className="range-group">
             <label>X Range:</label>
             <input
@@ -212,6 +212,7 @@ function GraphingCalculator({ onAddToHistory }: GraphingCalculatorProps) {
               value={xMin}
               onChange={(e) => setXMin(parseFloat(e.target.value))}
               placeholder="Min"
+              aria-label="X axis minimum"
             />
             <span>to</span>
             <input
@@ -219,6 +220,7 @@ function GraphingCalculator({ onAddToHistory }: GraphingCalculatorProps) {
               value={xMax}
               onChange={(e) => setXMax(parseFloat(e.target.value))}
               placeholder="Max"
+              aria-label="X axis maximum"
             />
           </div>
 
@@ -229,6 +231,7 @@ function GraphingCalculator({ onAddToHistory }: GraphingCalculatorProps) {
               value={yMin}
               onChange={(e) => setYMin(parseFloat(e.target.value))}
               placeholder="Min"
+              aria-label="Y axis minimum"
             />
             <span>to</span>
             <input
@@ -236,28 +239,31 @@ function GraphingCalculator({ onAddToHistory }: GraphingCalculatorProps) {
               value={yMax}
               onChange={(e) => setYMax(parseFloat(e.target.value))}
               placeholder="Max"
+              aria-label="Y axis maximum"
             />
           </div>
         </div>
 
-        <div className="function-list">
+        <div className="function-list" role="list" aria-label="Graphed functions">
           <h3>Functions</h3>
           {functions.length === 0 ? (
             <div className="empty-message">No functions added yet</div>
           ) : (
             functions.map((func) => (
-              <div key={func.id} className="function-item">
+              <div key={func.id} className="function-item" role="listitem">
                 <input
                   type="checkbox"
                   checked={func.visible}
                   onChange={() => toggleFunction(func.id)}
+                  aria-label={`Toggle visibility of ${func.expression}`}
                 />
                 <span
                   className="function-color"
                   style={{ backgroundColor: func.color }}
+                  aria-label={`Function color`}
                 ></span>
                 <span className="function-expression">f(x) = {func.expression}</span>
-                <button onClick={() => removeFunction(func.id)}>✕</button>
+                <button onClick={() => removeFunction(func.id)} aria-label={`Remove function ${func.expression}`}>✕</button>
               </div>
             ))
           )}
