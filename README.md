@@ -57,6 +57,8 @@ A comprehensive multi-mode desktop calculator application built with Electron, R
 - **Copy/Paste**: Clipboard integration for easy data transfer
 - **Responsive UI**: Adapts to different window sizes
 - **Cross-Platform**: Works on Windows, macOS, and Linux
+- **Error Boundaries**: Graceful error handling with user-friendly error messages
+- **Comprehensive Testing**: Unit tests for all calculation engines
 
 ## Installation
 
@@ -87,6 +89,27 @@ npm run dev
 ```
 
 This will start the Vite development server and launch the Electron application with hot reload enabled.
+
+## Testing
+
+Run unit tests for the calculation engines:
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
+The test suite includes comprehensive coverage for:
+- BasicCalculatorEngine (arithmetic operations, memory, etc.)
+- ScientificCalculatorEngine (trigonometry, logarithms, etc.)
+- ProgrammerCalculatorEngine (base conversion, bitwise operations)
+- FinancialCalculatorEngine (loan calculations, interest, NPV, etc.)
 
 ## Building
 
@@ -284,8 +307,12 @@ For issues, questions, or suggestions, please open an issue on the GitHub reposi
 
 ## Roadmap
 
+Completed:
+- [x] Unit tests for all calculation engines
+- [x] Error boundaries for production error handling
+- [x] Energy, Power, and Pressure unit conversions
+
 Future enhancements planned:
-- [ ] Unit tests for all calculation engines
 - [ ] Integration tests for components
 - [ ] Export history to CSV/PDF
 - [ ] Custom themes

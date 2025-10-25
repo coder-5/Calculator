@@ -14,6 +14,7 @@ import GraphingCalculator from './components/GraphingCalculator/GraphingCalculat
 import FinancialCalculator from './components/FinancialCalculator/FinancialCalculator';
 import History from './components/History/History';
 import Memory from './components/Memory/Memory';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
 import './styles/global.css';
 import './App.css';
@@ -87,26 +88,34 @@ function App() {
       <ModeToggle currentMode={mode} onModeChange={setMode} />
 
       <div className="app-content">
-        <div className="calculator-container">{renderCalculator()}</div>
+        <div className="calculator-container">
+          <ErrorBoundary fallbackMessage="The calculator encountered an error. Please switch modes or refresh the app.">
+            {renderCalculator()}
+          </ErrorBoundary>
+        </div>
 
         {showHistory && (
           <div className="sidebar slide-in">
-            <History
-              history={historyHook.history}
-              onClear={historyHook.clearHistory}
-              onDelete={historyHook.deleteEntry}
-              onClose={() => setShowHistory(false)}
-            />
+            <ErrorBoundary fallbackMessage="Error displaying history.">
+              <History
+                history={historyHook.history}
+                onClear={historyHook.clearHistory}
+                onDelete={historyHook.deleteEntry}
+                onClose={() => setShowHistory(false)}
+              />
+            </ErrorBoundary>
           </div>
         )}
 
         {showMemory && (
           <div className="sidebar slide-in">
-            <Memory
-              memory={memoryHook.memory}
-              onClear={memoryHook.memoryClear}
-              onClose={() => setShowMemory(false)}
-            />
+            <ErrorBoundary fallbackMessage="Error displaying memory.">
+              <Memory
+                memory={memoryHook.memory}
+                onClear={memoryHook.memoryClear}
+                onClose={() => setShowMemory(false)}
+              />
+            </ErrorBoundary>
           </div>
         )}
       </div>
