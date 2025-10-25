@@ -1,0 +1,74 @@
+.programmer-calculator {
+  width: 100%;
+  max-width: 600px;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.base-selector {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.base-selector button {
+  padding: var(--spacing-sm);
+  font-size: var(--font-sm);
+  font-weight: 600;
+}
+
+.base-selector button.active {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.binary-display {
+  font-family: 'Courier New', monospace;
+  font-size: var(--font-md);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-sm);
+  word-break: break-all;
+}
+
+.bit-width-selector {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.bit-width-selector label {
+  font-size: var(--font-sm);
+  font-weight: 600;
+}
+
+.bit-width-selector button {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-sm);
+}
+
+.bit-width-selector button.active {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.programmer-buttons {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.programmer-buttons button {
+  padding: var(--spacing-md);
+  font-size: var(--font-md);
+  font-weight: 500;
+  min-height: 50px;
+}
+
+.programmer-buttons button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}

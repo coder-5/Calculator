@@ -1,0 +1,238 @@
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { evaluate } from 'mathjs';
+import { GraphFunction, HistoryEntry } from '../../../shared/types';
+import './GraphingCalculator.css';
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+
+interface GraphingCalculatorProps {
+  onAddToHistory: (entry: Omit<HistoryEntry, 'id' | 'timestamp'>) => void;
+  memory: any;
+}
+
+const COLORS = ['#2196f3', '#f44336', '#4caf50', '#ff9800', '#9c27b0', '#00bcd4'];
+
+function GraphingCalculator({ onAddToHistory }: GraphingCalculatorProps) {
+  const [functions, setFunctions] = useState<GraphFunction[]>([]);
+  const [input, setInput] = useState('');
+  const [xMin, setXMin] = useState(-10);
+  const [xMax, setXMax] = useState(10);
+  const [yMin, setYMin] = useState(-10);
+  const [yMax, setYMax] = useState(10);
+  const [error, setError] = useState('');
+
+  const addFunction = useCallback(() => {
+    if (!input.trim()) return;
+
+    try {
+      // Test if the function is valid
+      evaluate(input.replace(/x/g, '0'));
+
+      const newFunc: GraphFunction = {
+        id: crypto.randomUUID(),
+        expression: input,
+        color: COLORS[functions.length % COLORS.length],
+        visible: true,
+      };
+
+      setFunctions((prev) => [...prev, newFunc]);
+      setInput('');
+      setError('');
+
+      onAddToHistory({
+        expression: `f(x) = ${input}`,
+        result: 'Function added to graph',
+        mode: 'graphing',
+      });
+    } catch (err: any) {
+      setError(`Invalid function: ${err.message}`);
+    }
+  }, [input, functions.length, onAddToHistory]);
+
+  const removeFunction = useCallback((id: string) => {
+    setFunctions((prev) => prev.filter((f) => f.id !== id));
+  }, []);
+
+  const toggleFunction = useCallback((id: string) => {
+    setFunctions((prev) =>
+      prev.map((f) => (f.id === id ? { ...f, visible: !f.visible } : f))
+    );
+  }, []);
+
+  const generateData = useCallback(() => {
+    const points = 200;
+    const step = (xMax - xMin) / points;
+    const xValues: number[] = [];
+    const datasets: any[] = [];
+
+    for (let i = 0; i <= points; i++) {
+      xValues.push(xMin + i * step);
+    }
+
+    functions.forEach((func) => {
+      if (!func.visible) return;
+
+      const yValues: (number | null)[] = xValues.map((x) => {
+        try {
+          const result = evaluate(func.expression.replace(/x/g, `(${x})`));
+          const y = typeof result === 'number' ? result : parseFloat(result);
+
+          // Filter out values outside y range
+          if (y < yMin || y > yMax || !isFinite(y)) {
+            return null;
+          }
+
+          return y;
+        } catch {
+          return null;
+        }
+      });
+
+      datasets.push({
+        label: `f(x) = ${func.expression}`,
+        data: yValues,
+        borderColor: func.color,
+        backgroundColor: func.color + '20',
+        pointRadius: 0,
+        borderWidth: 2,
+        tension: 0.1,
+      });
+    });
+
+    return {
+      labels: xValues.map((x) => x.toFixed(2)),
+      datasets,
+    };
+  }, [functions, xMin, xMax, yMin, yMax]);
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        type: 'linear' as const,
+        min: xMin,
+        max: xMax,
+        ticks: {
+          color: 'var(--color-text-primary)',
+        },
+        grid: {
+          color: 'var(--color-border)',
+        },
+      },
+      y: {
+        type: 'linear' as const,
+        min: yMin,
+        max: yMax,
+        ticks: {
+          color: 'var(--color-text-primary)',
+        },
+        grid: {
+          color: 'var(--color-border)',
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        labels: {
+          color: 'var(--color-text-primary)',
+        },
+      },
+    },
+  };
+
+  return (
+    <div className="graphing-calculator">
+      <div className="graph-container">
+        <Line data={generateData()} options={chartOptions} />
+      </div>
+
+      <div className="graph-controls">
+        <div className="function-input">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && addFunction()}
+            placeholder="Enter function (e.g., x^2, sin(x), etc.)"
+          />
+          <button onClick={addFunction}>Add Function</button>
+        </div>
+
+        {error && <div className="error-message">{error}</div>}
+
+        <div className="range-controls">
+          <div className="range-group">
+            <label>X Range:</label>
+            <input
+              type="number"
+              value={xMin}
+              onChange={(e) => setXMin(parseFloat(e.target.value))}
+              placeholder="Min"
+            />
+            <span>to</span>
+            <input
+              type="number"
+              value={xMax}
+              onChange={(e) => setXMax(parseFloat(e.target.value))}
+              placeholder="Max"
+            />
+          </div>
+
+          <div className="range-group">
+            <label>Y Range:</label>
+            <input
+              type="number"
+              value={yMin}
+              onChange={(e) => setYMin(parseFloat(e.target.value))}
+              placeholder="Min"
+            />
+            <span>to</span>
+            <input
+              type="number"
+              value={yMax}
+              onChange={(e) => setYMax(parseFloat(e.target.value))}
+              placeholder="Max"
+            />
+          </div>
+        </div>
+
+        <div className="function-list">
+          <h3>Functions</h3>
+          {functions.length === 0 ? (
+            <div className="empty-message">No functions added yet</div>
+          ) : (
+            functions.map((func) => (
+              <div key={func.id} className="function-item">
+                <input
+                  type="checkbox"
+                  checked={func.visible}
+                  onChange={() => toggleFunction(func.id)}
+                />
+                <span
+                  className="function-color"
+                  style={{ backgroundColor: func.color }}
+                ></span>
+                <span className="function-expression">f(x) = {func.expression}</span>
+                <button onClick={() => removeFunction(func.id)}>✕</button>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default GraphingCalculator;

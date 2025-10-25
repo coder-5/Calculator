@@ -1,0 +1,50 @@
+.scientific-calculator {
+  width: 100%;
+  max-width: 600px;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.mode-indicator {
+  background-color: var(--color-accent);
+  color: white;
+  font-weight: 600;
+}
+
+.scientific-buttons {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.scientific-buttons button {
+  padding: var(--spacing-md);
+  font-size: var(--font-md);
+  font-weight: 500;
+  min-height: 50px;
+}
+
+.btn-function {
+  background-color: var(--color-bg-tertiary);
+  font-size: var(--font-sm);
+}
+
+.btn-operator {
+  background-color: var(--color-operator-bg);
+  color: white;
+}
+
+.btn-operator:hover {
+  background-color: var(--color-operator-hover);
+}
+
+.btn-equals {
+  background-color: var(--color-equals-bg);
+  color: white;
+}
+
+.btn-equals:hover {
+  background-color: var(--color-equals-hover);
+}

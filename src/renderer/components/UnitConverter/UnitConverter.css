@@ -1,0 +1,51 @@
+.unit-converter {
+  width: 100%;
+  max-width: 500px;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.unit-converter h2 {
+  font-size: var(--font-xl);
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+}
+
+.converter-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.convert-btn {
+  padding: var(--spacing-md);
+  font-size: var(--font-lg);
+  font-weight: 600;
+  background-color: var(--color-accent);
+  color: white;
+  border-radius: var(--radius-md);
+}
+
+.convert-btn:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.conversion-result {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.result-text {
+  font-size: var(--font-lg);
+  color: var(--color-text-primary);
+}
+
+.result-text strong {
+  color: var(--color-accent);
+  font-size: var(--font-xl);
+}
