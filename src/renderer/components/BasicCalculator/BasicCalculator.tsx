@@ -114,8 +114,8 @@ function BasicCalculator({ onAddToHistory, memory }: BasicCalculatorProps) {
     const currentValue = engine.getCurrentValue();
     if (currentValue.length > 1) {
       const newValue = currentValue.slice(0, -1);
-      engine.inputDigit(newValue);
-      setDisplay(newValue);
+      const result = engine.inputDigit(newValue);
+      setDisplay(result);
     } else {
       handleClearEntry();
     }
